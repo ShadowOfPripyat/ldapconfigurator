@@ -223,7 +223,6 @@ PosarTitol
 
 # Main menu
 options=("Install LDAP Packages" "Make ldif examples" "Configure LDAPSCRIPTS" "Exit")
-
 select option in "${options[@]}"; do
     case $REPLY in
         1) install_ldap_packages;;
