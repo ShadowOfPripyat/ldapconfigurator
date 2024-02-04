@@ -1,13 +1,12 @@
 #!/bin/bash
 
 # Function to handle Ctrl+C
-exit_script() {
-    echo "Exiting..."
-    exit 1
-}
-
+# exit_script() {
+#     echo "Exiting..."
+#     exit 1
+# }
 # Trap Ctrl+C
-trap exit_script SIGINT
+# trap exit_script SIGINT
 
 #get the current domain name of ldap
 ldap_domain=$(ldapsearch -LLL -x -b "" -s base namingContexts | grep "namingContexts" | awk '{print $2}')
@@ -214,9 +213,7 @@ sudo echo "ara podriem posar la contrasenya."
 do_all_operations(){
     install_ldap_packages
     make_ldif_examples
-    configure_ldapscripts
-
-    
+    configure_ldapscripts 
 }
 
 # Crida al Títol
