@@ -219,7 +219,12 @@ do_all_operations(){
 # Crida al Títol
 PosarTitol
 # Main menu
-read -n 1 option
+
+
+readx(){
+    read -n 1 option
+}
+readx
 echo ""
 
 case $option in
