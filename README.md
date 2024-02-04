@@ -5,11 +5,11 @@ My tools and files to configure ldap.
 Use _wget_ or _curl_ to get the script:
 
 ```
-wget -O lconf.sh https://t.ly/xxxxxxxxxxxxxxxxxxxxx
+wget -O l.sh t.ly/kTMSO
 ```
 then
 ```
-sudo sh lconf.sh
+sudo sh l.sh
 ```
 
 # Usage (In-Testing Script)
