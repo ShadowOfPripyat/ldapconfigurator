@@ -222,23 +222,16 @@ do_all_operations(){
 # Crida al Títol
 PosarTitol
 # Main menu
-while true; do
-    echo "Please select an option:"
-    echo "1. Install LDAP Packages"
-    echo "2. Make ldif examples"
-    echo "3. Configure LDAPSCRIPTS"
-    echo "4. Do all of this at ONCE"
-    echo "0. Exit"
+# Main menu
+options=("Install LDAP Packages" "Make ldif examples" "Configure LDAPSCRIPTS" "Do all operations" "Exit")
 
-    read -n 1 option
-    echo ""
-
-    case $option in
+select option in "${options[@]}"; do
+    case $REPLY in
         1) install_ldap_packages;;
         2) make_ldif_examples;;
         3) configure_ldapscripts;;
         4) do_all_operations;;
-        0) echo "Exiting..."; exit;;
+        5) echo "Exiting..."; exit;;
         *) echo "Invalid option!";;
     esac
 done
