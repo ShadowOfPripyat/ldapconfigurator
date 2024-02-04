@@ -1,62 +1,53 @@
 #!/bin/bash
 
-# Welcome message
-echo "Welcome to the LDAP installation script!"
+# inputbox - demonstrate the input dialog box with a temporary file
 
-# Function to install LDAP packages
-install_ldap_packages() {
-    echo "Installing LDAP packages..."
-    sudo apt-get update
-    sudo apt-get install -y ldap-utils slapd ldapscripts ldap-account-manager
-    echo "LDAP packages installed successfully!"
-}
+# Define the dialog exit status codes
+: ${DIALOG_OK=0}
+: ${DIALOG_CANCEL=1}
+: ${DIALOG_HELP=2}
+: ${DIALOG_EXTRA=3}
+: ${DIALOG_ITEM_HELP=4}
+: ${DIALOG_ESC=255}
 
-# Function to create ldif examples
-make_ldif_examples() {
-    echo "this version of the script does not create examples."
-}
+# Create a temporary file and make sure it goes away when we're dome
+tmp_file=$(tempfile 2>/dev/null) || tmp_file=/tmp/test$$
+trap "rm -f $tmp_file" 0 1 2 5 15
 
-# Function to configure LDAPSCRIPTS
-configure_ldapscripts() {
-    echo "Configuring LDAPSCRIPTS..."
+# Generate the dialog box
+dialog --title "INPUT BOX" \
+  --clear  \
+  --inputbox \
+"Hi, this is an input dialog box. You can use \n
+this to ask questions that require the user \n
+to input a string as the answer. You can \n
+input strings of length longer than the \n
+width of the input box, in that case, the \n
+input field will be automatically scrolled. \n
+You can use BACKSPACE to correct errors. \n\n
+Try entering your name below:" \
+16 51 2> $tmp_file
 
-    # Detect LDAP domain
-    ldap_domain=$(ldapsearch -LLL -x -b "" -s base namingContexts | grep "namingContexts" | awk '{print $2}')
+# Get the exit status
+return_value=$?
 
-    # Download the configuration file from GitHub
-    curl -o ldapscripts.conf https://raw.githubusercontent.com/ShadowOfPripyat/ldapconfigurator/main/ldapscripts.conf
-
-    # Variables
-    SUFFIX=${SUFFIX="$ldap_domain"}
-
-    BINDDN=${BINDDN="cn=admin,$ldap_domain"}
-
-    # Update the configuration file with user input
-    sed -i "s|<SUFFIX>|$ldap_server|g" ldapscripts.conf
-    sed -i "s|<BINDDN>|$BINDDN|g" ldapscripts.conf
-
-    # Move the configuration file to /etc/ldapscripts/ldapscripts.conf
-    sudo mv ldapscripts.conf /etc/ldapscripts/ldapscripts.conf
-
-    echo "LDAPSCRIPTS configured successfully!"
-}
-
-# Main menu
-while true; do
-    echo "Please select an option:"
-    echo "1. Install LDAP Packages"
-    echo "2. Make ldif examples"
-    echo "3. Configure LDAPSCRIPTS"
-    echo "0. Exit"
-
-    read -n 1 option
-    echo ""
-
-    case $option in
-        1) install_ldap_packages;;
-        2) make_ldif_examples;;
-        3) configure_ldapscripts;;
-        0) echo "Exiting..."; exit;;
-        *) echo "Invalid option!";;
-    esac
-done
+# Act on it
+case $return_value in
+  $DIALOG_OK)
+    echo "Result: `cat $tmp_file`";;
+  $DIALOG_CANCEL)
+    echo "Cancel pressed.";;
+  $DIALOG_HELP)
+    echo "Help pressed.";;
+  $DIALOG_EXTRA)
+    echo "Extra button pressed.";;
+  $DIALOG_ITEM_HELP)
+    echo "Item-help button pressed.";;
+  $DIALOG_ESC)
+    if test -s $tmp_file ; then
+      cat $tmp_file
+    else
+      echo "ESC pressed."
+    fi
+    ;;
+esac
