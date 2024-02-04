@@ -221,16 +221,15 @@ PosarTitol
 # Main menu
 
 
-readx(){
-    read -n 1 option
-}
-readx
-echo ""
+# Main menu
+options=("Install LDAP Packages" "Make ldif examples" "Configure LDAPSCRIPTS" "Exit")
 
-case $option in
-    1) install_ldap_packages;;
-    2) make_ldif_examples;;
-    3) configure_ldapscripts;;
-    0) echo "Exiting..."; exit;;
-    *) echo "Invalid option!";;
-esac
+select option in "${options[@]}"; do
+    case $REPLY in
+        1) install_ldap_packages;;
+        2) make_ldif_examples;;
+        3) configure_ldapscripts;;
+        4) echo "Exiting..."; exit;;
+        *) echo "Invalid option!";;
+    esac
+done
