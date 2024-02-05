@@ -86,7 +86,7 @@ checkPackages(){
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 
 # Create a temporary file
-temp_file=$(mktemp)
+temp_file=$(/tmp/lconf85.temp)
 
 # Call the function and write its output to the temporary file
 checkPackages > "$temp_file"
@@ -94,8 +94,6 @@ checkPackages > "$temp_file"
 # Read the content of the temporary file into a variable
 chkPkgOutput=$(< "$temp_file")
 
-# Remove the temporary file
-rm "$temp_file"
 #--------------------------------------------------START--GRAPHICAL--INTERFACE------------------------------------------------------#
 
 DIALOG_CANCEL=1
@@ -120,7 +118,8 @@ while true; do
     "1" "Instalar tots els paquets ldap" \
     "2" "Reconfigurar slapd i canviar el nom del domini" \
     "3" "Crear Fitxers ldif" \
-    "4" "Display Home Space Utilization" \
+    "4" "Test Experimental Output (show if packages are installed/not)" \
+    # "5" "Display Home Space Utilization" \
     2>&1 1>&3)
   exit_status=$?
   exec 3>&-
@@ -153,14 +152,18 @@ while true; do
       display_result "Make LDIF Examples"
       ;;
     4 )
-      if [[ $(id -u) -eq 0 ]]; then
-        result=$(du -sh /home/* 2> /dev/null)
-        display_result "Home Space Utilization (All Users)"
-      else
-        result=$(du -sh $HOME 2> /dev/null)
-        display_result "Home Space Utilization ($USER)"
-      fi
+      result=$(echo "The output will be shown out of the UI.")
+      display_result "Experimental"
       ;;
+    # 5 )
+    #   if [[ $(id -u) -eq 0 ]]; then
+    #     result=$(du -sh /home/* 2> /dev/null)
+    #     display_result "Home Space Utilization (All Users)"
+    #   else
+    #     result=$(du -sh $HOME 2> /dev/null)
+    #     display_result "Home Space Utilization ($USER)"
+    #   fi
+    #   ;;
   esac
 done
 #-----------------------------------------------------END--GRAPHICAL--INTERFACE------------------------------------------------------#
