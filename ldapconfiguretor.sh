@@ -1,9 +1,6 @@
 #!/bin/bash
 
-
-
-
-testico() {
+makegldif() {
 # GROUP LDIF EXAMPLE
     cat << EOF > grup.ldif
 # Es pot fer servir un dels 2 DN, un per posar-lo dins a una Unitat Organitzativa i l'altre no.
@@ -16,45 +13,8 @@ cn: Grup
 EOF
 }
 
-
-
-
-
-# while-menu-dialog: a menu driven system information program
-
-##########FUNCTIONS##########
-install_ldap_packages() {
-    echo "Installing LDAP packages..."
-    sudo apt-get update
-    sudo apt-get install -y ldap-utils slapd ldapscripts ldap-account-manager
-    echo "LDAP packages installed successfully!"
-}
-#´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
-make_ldif_examples() {
-    echo "Creating ldif examples..."
-    cd ~
-
-# OU LDIF EXAMPLE
+makeuldfif() {
     cat << EOF > ou.ldif
-dn: ou=UnitatOrganitzativa,dc=domini,dc=cat
-objectClass: organizationalUnit
-objectClass: top
-ou: UnitatOrganitzativa
-EOF
-
-# GROUP LDIF EXAMPLE
-    cat << EOF > grup.ldif
-# Es pot fer servir un dels 2 DN, un per posar-lo dins a una Unitat Organitzativa i l'altre no.
-# dn: cn=Grup,ou=UnitatOrganitzativa,dc=domini,dc=cat
-dn: cn=Grup,dc=domini,dc=cat
-objectClass: top
-objectClass: posixGroup
-gidNumber: 2000
-cn: Grup
-EOF
-
-# USER LDIF EXAMPLE
-    cat << EOF > usuari.ldif
 # Es pot fer servir un dels 2 DN, un per posar-lo dins a una Unitat Organitzativa i l'altre no.
 # dn: uid=Usuari,ou=UnitatOrganitzativa,dc=domini,dc=cat
 dn: uid=Usuari,dc=domini,dc=cat
@@ -69,11 +29,33 @@ uidNumber 2000
 #homeDirectory: /home/usuari
 #loginShell: /bin/bash
 #sn: Cognom
-# passwrod should be generated with slappasswd or similar...
 userPassword: caput
-
 EOF
 }
+
+makeouldif() {
+    cat << EOF > ou.ldif
+# Es pot fer servir un dels 2 DN, un per posar-lo dins a una Unitat Organitzativa i l'altre no.
+# dn: cn=Grup,ou=UnitatOrganitzativa,dc=domini,dc=cat
+dn: cn=Grup,dc=domini,dc=cat
+objectClass: top
+objectClass: posixGroup
+gidNumber: 2000
+cn: Grup
+EOF
+}
+
+createxampleldif() {
+    makeouldif
+    makeuldfif
+    makegldif
+}
+
+
+# while-menu-dialog: a menu driven system information program
+
+#´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
+
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 
 #--------------------------------------------------START--GRAPHICAL--INTERFACE------------------------------------------------------#
@@ -117,12 +99,12 @@ while true; do
   esac
   case $selection in
     1 )
-      testico
-      result=$(echo "<S'han creat els fitxers d'exemple")
+      result=$(sudo apt update && sudo apt install -y slapd ldap-utils ldapscripts ldap-account-manager && echo && echo "S'han instalat tots els paquets correctament")
       display_result "Instalació de Paquets LDAP"
       ;;
     2 )
-      result=$(make_ldif_examples)
+      createxampleldif
+      result=$(echo "s'han creat els fitxers ldif d'exemple".)
       display_result "Make LDIF Examples"
       ;;
     3 )
