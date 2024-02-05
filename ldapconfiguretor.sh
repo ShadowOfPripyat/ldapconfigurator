@@ -63,18 +63,43 @@ createxampleldif() {
 
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 checkPackages(){
-  # Check if neofetch is installed
-  PKG_NAME2="slapd"
+  # Check if is installed
+  PKG_NAME1="slapd"
   # PKG_OKY6=$(dpkg-query -W --showformat='${Package}\n' $PKG_NAME2|grep "PKG_NAME2" 2> /dev/null)
+  if dpkg-query -W --showformat='${Status}\n' $PKG_NAME1 2>/dev/null |grep "install ok installed" > /dev/null; then
+    echo "$PKG_NAME1 is Installed"
+  else
+    echo "$PKG_NAME1 is not installed."
+  fi
+
+  # Check if it is installed
+  PKG_NAME2="ldap-utils"
   if dpkg-query -W --showformat='${Status}\n' $PKG_NAME2 2>/dev/null |grep "install ok installed" > /dev/null; then
     echo "$PKG_NAME2 is Installed"
   else
     echo "$PKG_NAME2 is not installed."
   fi
+
+  # Check if it is installed
+  PKG_NAME3="ldapscripts"
+  if dpkg-query -W --showformat='${Status}\n' $PKG_NAME3 2>/dev/null |grep "install ok installed" > /dev/null; then
+    echo "$PKG_NAME3 is Installed"
+  else
+    echo "$PKG_NAME3 is not installed."
+  fi
+
+  # Check if it is installed
+  PKG_NAME4="ldap-account-manager"
+  if dpkg-query -W --showformat='${Status}\n' $PKG_NAME4 2>/dev/null |grep "install ok installed" > /dev/null; then
+    echo "$PKG_NAME4 is Installed"
+  else
+    echo "$PKG_NAME4 is not installed."
+  fi
+
 }
 pks=$(checkPackages)
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
-
+ldap_domain=$(ldapsearch -LLL -x -b "" -s base namingContexts | grep "namingContexts" | awk '{print $2}')
 
 #--------------------------------------------------START--GRAPHICAL--INTERFACE------------------------------------------------------#
 
@@ -93,7 +118,7 @@ while true; do
   exec 3>&1
   selection=$(dialog \
     --backtitle "LDAP CONFIGURATOR v1 GRAPHICAL-EDITION" \
-    --title "LDAP CONFIGURATOR V1-G" \
+    --title "LDAP CONFIGURATOR - $ldap_domain" \
     --clear \
     --cancel-label "Exit" \
     --menu "$pks \n \n Please select:" $HEIGHT $WIDTH 4 \
