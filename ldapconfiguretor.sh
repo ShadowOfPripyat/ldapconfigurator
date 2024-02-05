@@ -21,41 +21,6 @@ objectClass: organizationalUnit
 objectClass: top
 ou: UnitatOrganitzativa
 EOF
-
-# GROUP LDIF EXAMPLE
-    cat << EOF > grup.ldif
-# Es pot fer servir un dels 2 DN, un per posar-lo dins a una Unitat Organitzativa i l'altre no.
-# dn: cn=Grup,ou=UnitatOrganitzativa,dc=domini,dc=cat
-dn: cn=Grup,dc=domini,dc=cat
-objectClass: top
-objectClass: posixGroup
-gidNumber: 2000
-cn: Grup
-EOF
-
-# USER LDIF EXAMPLE
-    cat << EOF > usuari.ldif
-# Es pot fer servir un dels 2 DN, un per posar-lo dins a una Unitat Organitzativa i l'altre no.
-# dn: uid=Usuari,ou=UnitatOrganitzativa,dc=domini,dc=cat
-dn: uid=Usuari,dc=domini,dc=cat
-objectClass: top
-objectClass: posixAccount
-objectClass: inetOrgPerson
-objectClass: person
-cn: Usuari
-uid: Usuari
-uidNumber 2000
-#gidNumber: 2000
-#homeDirectory: /home/usuari
-#loginShell: /bin/bash
-#sn: Cognom
-# passwrod should be generated with slappasswd or similar...
-userPassword: caput
-
-EOF
-echo "Added ou.ldif at ~"
-echo "Added grup.ldif at ~"
-echo "Added usuari.ldif at ~"
 }
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 
