@@ -61,8 +61,7 @@ createxampleldif() {
 }
 
 
-#´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
-checkPackages(){
+pkg1=$(
   # Check if is installed
   PKG_NAME1="slapd"
   # PKG_OKY6=$(dpkg-query -W --showformat='${Package}\n' $PKG_NAME2|grep "PKG_NAME2" 2> /dev/null)
@@ -71,33 +70,35 @@ checkPackages(){
   else
     echo "$PKG_NAME1 is not installed."
   fi
+)
 
-  # Check if it is installed
+pkg2=$(
   PKG_NAME2="ldap-utils"
   if dpkg-query -W --showformat='${Status}\n' $PKG_NAME2 2>/dev/null |grep "install ok installed" > /dev/null; then
     echo "$PKG_NAME2 is Installed"
   else
     echo "$PKG_NAME2 is not installed."
   fi
+)
 
-  # Check if it is installed
-  PKG_NAME3="ldapscripts"
+pkg3=$(
+PKG_NAME3="ldapscripts"
   if dpkg-query -W --showformat='${Status}\n' $PKG_NAME3 2>/dev/null |grep "install ok installed" > /dev/null; then
     echo "$PKG_NAME3 is Installed"
   else
     echo "$PKG_NAME3 is not installed."
   fi
+)
 
-  # Check if it is installed
+pkg4=$(
   PKG_NAME4="ldap-account-manager"
   if dpkg-query -W --showformat='${Status}\n' $PKG_NAME4 2>/dev/null |grep "install ok installed" > /dev/null; then
     echo "$PKG_NAME4 is Installed"
   else
     echo "$PKG_NAME4 is not installed."
   fi
+)
 
-}
-pks=$(checkPackages)
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 ldap_domain=$(ldapsearch -LLL -x -b "" -s base namingContexts | grep "namingContexts" | awk '{print $2}')
 
@@ -121,7 +122,7 @@ while true; do
     --title "LDAP CONFIGURATOR - $ldap_domain" \
     --clear \
     --cancel-label "Exit" \
-    --menu "$pks \n \n Please select:" $HEIGHT $WIDTH 4 \
+    --menu "$pkg1 \n $pkg2 \n $pkg3 \n $pkg4 \n  \n \n Please select:" $HEIGHT $WIDTH 4 \
     "1" "Instalar tots els paquets ldap" \
     "2" "Reconfigurar slapd i canviar el nom del domini" \
     "3" "Crear Fitxers ldif" \
