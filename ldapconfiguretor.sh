@@ -55,6 +55,35 @@ createxampleldif() {
 # while-menu-dialog: a menu driven system information program
 
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
+checkPackages() {
+# Check if slapd is installed
+if dpkg-query -l slapd 2> /dev/null; then
+        echo "slapd is installed"
+else
+        echo "slapd is not installed"
+fi
+
+# Check if ldap-utils is installed
+if dpkg-query -l ldap-utils 2> /dev/null; then
+        echo "ldap-utils" is installed"
+else
+        echo "ldap-utils" is not installed"
+fi
+
+# Check if ldapscripts is installed
+if dpkg-query -l ldapscripts 2> /dev/null; then
+        echo "ldapscripts" is installed"
+else
+        echo "ldapscripts" is not installed"
+fi
+
+# Check if ldap-account-manager is installed
+if dpkg-query -l ldap-account-manager 2> /dev/null; then
+        echo "ldap-account-manager" is installed"
+else
+        echo "ldap-account-manager" is not installed"
+
+}
 
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 
@@ -79,9 +108,11 @@ while true; do
     --clear \
     --cancel-label "Exit" \
     --menu "Please select:" $HEIGHT $WIDTH 4 \
+    --msgbox "checkPackages"\
     "1" "Instalar tots els paquets ldap" \
-    "2" "Crear Fitxers ldif" \
-    "3" "Display Home Space Utilization" \
+    "2" "Reconfigurar slapd i canviar el nom del domini" \
+    "3" "Crear Fitxers ldif" \
+    "4" "Display Home Space Utilization" \
     2>&1 1>&3)
   exit_status=$?
   exec 3>&-
@@ -104,11 +135,16 @@ while true; do
       display_result "Instalació de Paquets LDAP"
       ;;
     2 )
+      sudo dpkg-reconfigure slapd
+      result=$(echo "has reconfigurat el domini LDAP (slapd)".)
+      display_result "Reconfiguració del Domini"
+      ;;
+    3 )
       createxampleldif
       result=$(echo "s'han creat els fitxers ldif d'exemple".)
       display_result "Make LDIF Examples"
       ;;
-    3 )
+    4 )
       if [[ $(id -u) -eq 0 ]]; then
         result=$(du -sh /home/* 2> /dev/null)
         display_result "Home Space Utilization (All Users)"
