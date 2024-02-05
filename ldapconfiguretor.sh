@@ -86,6 +86,7 @@ fi
 
 }
 
+chkpkgs=$(checkPackages)
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 
 #--------------------------------------------------START--GRAPHICAL--INTERFACE------------------------------------------------------#
@@ -108,7 +109,7 @@ while true; do
     --title "LDAP CONFIGURATOR V1-G" \
     --clear \
     --cancel-label "Exit" \
-    --menu "checkPackages /n Please select:" $HEIGHT $WIDTH 4 \
+    --menu "$chkpkgs \n Please select:" $HEIGHT $WIDTH 4 \
     "1" "Instalar tots els paquets ldap" \
     "2" "Reconfigurar slapd i canviar el nom del domini" \
     "3" "Crear Fitxers ldif" \
