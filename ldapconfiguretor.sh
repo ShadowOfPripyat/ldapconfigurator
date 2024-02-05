@@ -3,7 +3,7 @@
 
 
 
-
+testico() {
 # GROUP LDIF EXAMPLE
     cat << EOF > grup.ldif
 # Es pot fer servir un dels 2 DN, un per posar-lo dins a una Unitat Organitzativa i l'altre no.
@@ -14,7 +14,7 @@ objectClass: posixGroup
 gidNumber: 2000
 cn: Grup
 EOF
-
+}
 
 
 
@@ -117,7 +117,7 @@ while true; do
   esac
   case $selection in
     1 )
-      make_ldif_examples
+      testico
       result=$(echo "<S'han creat els fitxers d'exemple")
       display_result "Instalació de Paquets LDAP"
       ;;
