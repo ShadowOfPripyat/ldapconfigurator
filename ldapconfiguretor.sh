@@ -14,7 +14,7 @@ EOF
 }
 
 makeuldfif() {
-    cat << EOF > ou.ldif
+    cat << EOF > usuari.ldif
 # Es pot fer servir un dels 2 DN, un per posar-lo dins a una Unitat Organitzativa i l'altre no.
 # dn: uid=Usuari,ou=UnitatOrganitzativa,dc=domini,dc=cat
 dn: uid=Usuari,dc=domini,dc=cat
@@ -99,7 +99,8 @@ while true; do
   esac
   case $selection in
     1 )
-      result=$(sudo apt update && sudo apt install -y slapd ldap-utils ldapscripts ldap-account-manager && echo && echo "S'han instalat tots els paquets correctament")
+      sudo apt update && sudo apt install -y slapd ldap-utils ldapscripts ldap-account-manager
+      result=$(echo && echo "S'han instalat tots els paquets correctament")
       display_result "Instalació de Paquets LDAP"
       ;;
     2 )
