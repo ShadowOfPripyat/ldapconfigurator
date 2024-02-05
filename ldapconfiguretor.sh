@@ -82,6 +82,7 @@ if dpkg-query -l ldap-account-manager 2> /dev/null; then
         echo "ldap-account-manager" is installed"
 else
         echo "ldap-account-manager" is not installed"
+fi
 
 }
 
@@ -107,8 +108,7 @@ while true; do
     --title "LDAP CONFIGURATOR V1-G" \
     --clear \
     --cancel-label "Exit" \
-    --menu "Please select:" $HEIGHT $WIDTH 4 \
-    --msgbox "checkPackages"\
+    --menu "checkPackages /n Please select:" $HEIGHT $WIDTH 4 \
     "1" "Instalar tots els paquets ldap" \
     "2" "Reconfigurar slapd i canviar el nom del domini" \
     "3" "Crear Fitxers ldif" \
