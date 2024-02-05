@@ -52,10 +52,11 @@ createxampleldif() {
 }
 
 
-# while-menu-dialog: a menu driven system information program
+
+
 
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
-checkPackages() {
+checkPackages=$(
 # Check if slapd is installed
 if dpkg-query -l slapd 2> /dev/null; then
         echo "slapd is installed"
@@ -83,10 +84,9 @@ if dpkg-query -l ldap-account-manager 2> /dev/null; then
 else
         echo "ldap-account-manager" is not installed"
 fi
+)
 
-}
 
-chkpkgs=$(checkPackages)
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 
 #--------------------------------------------------START--GRAPHICAL--INTERFACE------------------------------------------------------#
@@ -109,7 +109,7 @@ while true; do
     --title "LDAP CONFIGURATOR V1-G" \
     --clear \
     --cancel-label "Exit" \
-    --menu "$chkpkgs \n Please select:" $HEIGHT $WIDTH 4 \
+    --menu "$checkPackages \n \n Please select:" $HEIGHT $WIDTH 4 \
     "1" "Instalar tots els paquets ldap" \
     "2" "Reconfigurar slapd i canviar el nom del domini" \
     "3" "Crear Fitxers ldif" \
