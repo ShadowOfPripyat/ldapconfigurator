@@ -52,43 +52,50 @@ createxampleldif() {
 }
 
 
-
-
-
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
-checkPackages=$(
+checkPackages(){
 # Check if slapd is installed
-if dpkg-query -l slapd 2> /dev/null; then
-        echo "slapd is installed"
-else
-        echo "slapd is not installed"
-fi
-
-# Check if ldap-utils is installed
-if dpkg-query -l ldap-utils 2> /dev/null; then
-        echo "ldap-utils" is installed"
-else
-        echo "ldap-utils" is not installed"
-fi
-
-# Check if ldapscripts is installed
-if dpkg-query -l ldapscripts 2> /dev/null; then
-        echo "ldapscripts" is installed"
-else
-        echo "ldapscripts" is not installed"
-fi
-
-# Check if ldap-account-manager is installed
-if dpkg-query -l ldap-account-manager 2> /dev/null; then
-        echo "ldap-account-manager" is installed"
-else
-        echo "ldap-account-manager" is not installed"
-fi
-)
-
+    if dpkg-query -l slapd 2> /dev/null; then
+            echo "slapd is installed"
+    else
+            echo "slapd is not installed"
+    fi
+    
+    # Check if ldap-utils is installed
+    if dpkg-query -l ldap-utils 2> /dev/null; then
+            echo "ldap-utils" is installed"
+    else
+            echo "ldap-utils" is not installed"
+    fi
+    
+    # Check if ldapscripts is installed
+    if dpkg-query -l ldapscripts 2> /dev/null; then
+            echo "ldapscripts" is installed"
+    else
+            echo "ldapscripts" is not installed"
+    fi
+    
+    # Check if ldap-account-manager is installed
+    if dpkg-query -l ldap-account-manager 2> /dev/null; then
+            echo "ldap-account-manager" is installed"
+    else
+            echo "ldap-account-manager" is not installed"
+    fi
+}
 
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 
+# Create a temporary file
+temp_file=$(mktemp)
+
+# Call the function and write its output to the temporary file
+checkPackages > "$temp_file"
+
+# Read the content of the temporary file into a variable
+chkPkgOutput=$(< "$temp_file")
+
+# Remove the temporary file
+rm "$temp_file"
 #--------------------------------------------------START--GRAPHICAL--INTERFACE------------------------------------------------------#
 
 DIALOG_CANCEL=1
@@ -109,7 +116,7 @@ while true; do
     --title "LDAP CONFIGURATOR V1-G" \
     --clear \
     --cancel-label "Exit" \
-    --menu "$checkPackages \n \n Please select:" $HEIGHT $WIDTH 4 \
+    --menu "$chkPkgOutput \n \n Please select:" $HEIGHT $WIDTH 4 \
     "1" "Instalar tots els paquets ldap" \
     "2" "Reconfigurar slapd i canviar el nom del domini" \
     "3" "Crear Fitxers ldif" \
