@@ -1,5 +1,25 @@
 #!/bin/bash
 
+
+
+
+
+# GROUP LDIF EXAMPLE
+    cat << EOF > grup.ldif
+# Es pot fer servir un dels 2 DN, un per posar-lo dins a una Unitat Organitzativa i l'altre no.
+# dn: cn=Grup,ou=UnitatOrganitzativa,dc=domini,dc=cat
+dn: cn=Grup,dc=domini,dc=cat
+objectClass: top
+objectClass: posixGroup
+gidNumber: 2000
+cn: Grup
+EOF
+
+
+
+
+
+
 # while-menu-dialog: a menu driven system information program
 
 ##########FUNCTIONS##########
@@ -72,7 +92,7 @@ display_result() {
 while true; do
   exec 3>&1
   selection=$(dialog \
-    --backtitle "System Information" \
+    --backtitle "LDAP CONFIGURATOR v1 GRAPHICAL-EDITION" \
     --title "LDAP CONFIGURATOR V1-G" \
     --clear \
     --cancel-label "Exit" \
