@@ -86,6 +86,7 @@ checkPackages(){
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 
 # Create a temporary file
+touch /tmp/lconf85.temp
 temp_file=$(/tmp/lconf85.temp)
 
 # Call the function and write its output to the temporary file
@@ -93,7 +94,7 @@ checkPackages > "$temp_file"
 
 # Read the content of the temporary file into a variable
 chkPkgOutput=$(< "$temp_file")
-
+rm $temp_file
 #--------------------------------------------------START--GRAPHICAL--INTERFACE------------------------------------------------------#
 
 DIALOG_CANCEL=1
