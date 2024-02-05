@@ -85,16 +85,23 @@ checkPackages(){
 
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 
+# Define your function
+my_function() {
+    echo "This is the output of my function"
+}
+
 # Create a temporary file
-touch /tmp/lconf85.temp
-temp_file=$(/tmp/lconf85.temp)
+temp_file=$(mktemp)
 
 # Call the function and write its output to the temporary file
-checkPackages > "$temp_file"
+my_function > "$temp_file"
 
 # Read the content of the temporary file into a variable
-chkPkgOutput=$(< "$temp_file")
-rm $temp_file
+outputito=$(< "$temp_file")
+
+
+# Remove the temporary file
+rm "$temp_file"
 #--------------------------------------------------START--GRAPHICAL--INTERFACE------------------------------------------------------#
 
 DIALOG_CANCEL=1
@@ -153,7 +160,7 @@ while true; do
       display_result "Make LDIF Examples"
       ;;
     4 )
-      result=$(echo "The output will be shown out of the UI.")
+      result=$($outputito)
       display_result "Experimental"
       ;;
     # 5 )
