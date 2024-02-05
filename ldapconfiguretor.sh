@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# check if dialog is installed and if its not, install it
+REQUIRED_PKG="dialog"
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PKG|grep "install ok installed")
+echo Checking for $REQUIRED_PKG: $PKG_OK
+if [ "" = "$PKG_OK" ]; then
+  echo "No $REQUIRED_PKG. Setting up $REQUIRED_PKG."
+  sudo apt-get --yes install $REQUIRED_PKG
+fi
+
 makegldif() {
 # GROUP LDIF EXAMPLE
     cat << EOF > grup.ldif
@@ -54,54 +63,19 @@ createxampleldif() {
 
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 checkPackages(){
-# Check if slapd is installed
-    if dpkg-query -l slapd 2> /dev/null; then
-            echo "slapd is installed"
-    else
-            echo "slapd is not installed"
-    fi
-    
-    # Check if ldap-utils is installed
-    if dpkg-query -l ldap-utils 2> /dev/null; then
-            echo "ldap-utils" is installed"
-    else
-            echo "ldap-utils" is not installed"
-    fi
-    
-    # Check if ldapscripts is installed
-    if dpkg-query -l ldapscripts 2> /dev/null; then
-            echo "ldapscripts" is installed"
-    else
-            echo "ldapscripts" is not installed"
-    fi
-    
-    # Check if ldap-account-manager is installed
-    if dpkg-query -l ldap-account-manager 2> /dev/null; then
-            echo "ldap-account-manager" is installed"
-    else
-            echo "ldap-account-manager" is not installed"
-    fi
+  # Check if neofetch is installed
+  PKG_NAME2="slapd"
+  # PKG_OKY6=$(dpkg-query -W --showformat='${Package}\n' $PKG_NAME2|grep "PKG_NAME2" 2> /dev/null)
+  if dpkg-query -W --showformat='${Status}\n' $PKG_NAME2 2>/dev/null |grep "install ok installed" > /dev/null; then
+    echo "$PKG_NAME2 is Installed"
+  else
+    echo "$PKG_NAME2 is not installed."
+  fi
 }
-
+pks=$(checkPackages)
 #´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 
-# Define your function
-my_function() {
-    echo "This is the output of my function"
-}
 
-# Create a temporary file
-temp_file=$(mktemp)
-
-# Call the function and write its output to the temporary file
-my_function > "$temp_file"
-
-# Read the content of the temporary file into a variable
-outputito=$(< "$temp_file")
-
-
-# Remove the temporary file
-rm "$temp_file"
 #--------------------------------------------------START--GRAPHICAL--INTERFACE------------------------------------------------------#
 
 DIALOG_CANCEL=1
@@ -122,12 +96,11 @@ while true; do
     --title "LDAP CONFIGURATOR V1-G" \
     --clear \
     --cancel-label "Exit" \
-    --menu "$chkPkgOutput \n \n Please select:" $HEIGHT $WIDTH 4 \
+    --menu "$pks \n \n Please select:" $HEIGHT $WIDTH 4 \
     "1" "Instalar tots els paquets ldap" \
     "2" "Reconfigurar slapd i canviar el nom del domini" \
     "3" "Crear Fitxers ldif" \
     "4" "Test Experimental Output (show if packages are installed/not)" \
-    # "5" "Display Home Space Utilization" \
     2>&1 1>&3)
   exit_status=$?
   exec 3>&-
