@@ -260,8 +260,12 @@ sudo ldapadd -f MAIN-OUS.ldif -D cn=admin,$ldap_domain -xW
 #create temp file for ldap password
 ldapscriptspasswd() {
     # Prompt user for secret word using dialog
-    secret=$(dialog --clear --title "Set LDAP secret" \
-        --inputbox "Enter your LDAP password:" 10 30 2>&1 >/dev/tty)
+    # secret=$(dialog --clear --title "Set LDAP secret" \
+    #     --inputbox "Enter your LDAP password:" 10 30 2>&1 >/dev/tty) #old method
+    exec 3>&1;
+    secret=$(dialog --clear --title "Configure LDAPSCRIPTS" --inputbox "test" 0 0 2>&1 1>&3);
+    exec 3>&-;
+
 
     # Check if dialog was cancelled or user didn't input anything
     if [ $? -ne 0 ] || [ -z "$secret" ]; then
@@ -270,7 +274,7 @@ ldapscriptspasswd() {
     fi
 
     # Update the LDAP password file with the secret
-    sudo echo -n '$secret' > /etc/ldapscripts/ldapscripts.passwd
+    sudo echo -n $secret > /etc/ldapscripts/ldapscripts.passwd
     sudo chmod 400 /etc/ldapscripts/ldapscripts.passwd
     echo "Secret word '$secret' successfully set in /etc/ldapscripts/ldapscripts.passwd"
 }
@@ -364,7 +368,7 @@ while true; do
       configure_ldapscripts
       ldapscriptspasswd
       setup_main_ous
-      result=$(printf "s'ha creat 'ldapscripts.conf' amb el domini actual \nS'han creat les Unitats Organitzatives Principals \nS'ha establert la contrasenya de LDAP a ldapscripts.passwd  ")
+      result=$(printf "- s'ha creat 'ldapscripts.conf' amb el domini actual \n\n- S'han creat les Unitats Organitzatives Principals \n\n- S'ha establert la contrasenya de LDAP a ldapscripts.passwd")
       display_result "Configuració de ldapscripts"
       ;;
     5 )
