@@ -24,6 +24,7 @@ objectClass: posixGroup
 gidNumber: 2000
 cn: Grup
 EOF
+sudo chmod 777 grup.ldif
 }
 
 makeuldfif() {
@@ -44,6 +45,7 @@ uidNumber 2000
 #sn: Cognom
 userPassword: caput
 EOF
+sudo chmod 777 usuari.ldif
 }
 
 makeouldif() {
@@ -54,6 +56,7 @@ objectClass: top
 objectClass: organizationalUnit
 ou: UnitatOrganitzativa
 EOF
+sudo chmod 777 ou.ldif
 }
 
 createxampleldif() {
