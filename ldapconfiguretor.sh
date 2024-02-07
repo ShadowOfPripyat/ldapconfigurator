@@ -255,7 +255,7 @@ sudo ldapadd -f MAIN-OUS.ldif -D cn=admin,$ldap_domain -xW
 
 #´´´´´´´´´ldap´´password´´stuff´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
 #create temp file for ldap password
-set_ldapscripts_passwd() {
+ldapscriptspasswd() {
     # Prompt user for secret word using dialog
     secret=$(dialog --clear --title "Set LDAP secret" \
         --inputbox "Enter your LDAP password:" 10 30 2>&1 >/dev/tty)
@@ -288,7 +288,7 @@ set_ldapscripts_passwd() {
       display_result "Make LDIF Examples"
       #configure-ldapscirpts
       configure_ldapscripts
-      sudo -S set_ldapscripts_passwd
+      ldapscriptspasswd
       setup_main_ous
       result=$(printf "s'ha creat 'ldapscripts.conf' amb el domini actual \nS'han creat les Unitats Organitzatives Principals \nS'ha establert la contrasenya de LDAP a ldapscripts.passwd  ")
       display_result "Configuració de ldapscripts"
@@ -320,7 +320,7 @@ while true; do
     --title "LDAP CONFIGURATOR - $ldap_domain" \
     --clear \
     --cancel-label "Exit" \
-    --menu "$pkg1 \n $pkg2 \n $pkg3 \n $pkg4 \n  \n \n Please select:" $HEIGHT $WIDTH 4 \
+    --menu "$pkg1 \n $pkg2 \n $pkg3 \n $pkg4 \n  \n \n Please select:" $HEIGHT $WIDTH 6 \
     "1" "Instalar tots els paquets ldap" \
     "2" "Reconfigurar slapd i canviar el nom del domini" \
     "3" "Crear Fitxers .LDIF d'exemple" \
@@ -359,7 +359,7 @@ while true; do
       ;;
     4 )
       configure_ldapscripts
-      sudo -S set_ldapscripts_passwd
+      ldapscriptspasswd
       setup_main_ous
       result=$(printf "s'ha creat 'ldapscripts.conf' amb el domini actual \nS'han creat les Unitats Organitzatives Principals \nS'ha establert la contrasenya de LDAP a ldapscripts.passwd  ")
       display_result "Configuració de ldapscripts"
