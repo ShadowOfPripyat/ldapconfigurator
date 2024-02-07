@@ -249,7 +249,7 @@ ob jectClass: organizationalUnit
 objectClass: top
 ou: Maquines
 EOF
-
+printf "A continuació es demanarà la contrasenya del teu domini LDAP\nPer afegir les OU principals de LDAPSCRIPTS:\n\n"
 sudo ldapadd -f MAIN-OUS.ldif -D cn=admin,$ldap_domain -xW
 }
 
@@ -273,9 +273,26 @@ set_ldapscripts_passwd() {
 }
 
 
-doallabove(){
-
-}
+ doallabove(){
+      #packages
+      sudo apt update && sudo apt install -y slapd ldap-utils ldapscripts ldap-account-manager
+      result=$(echo && echo "S'han instalat tots els paquets correctament")
+      display_result "Instalació de Paquets LDAP"
+      #set-domain
+      sudo dpkg-reconfigure slapd
+      result=$(echo "has reconfigurat el domini LDAP (slapd)".)
+      display_result "Reconfiguració del Domini"
+      #create-ldif-with-actual-domain
+      createxampleldif
+      result=$(echo "s'han creat els fitxers ldif d'exemple".)
+      display_result "Make LDIF Examples"
+      #configure-ldapscirpts
+      configure_ldapscripts
+      sudo -S set_ldapscripts_passwd
+      setup_main_ous
+      result=$(printf "s'ha creat 'ldapscripts.conf' amb el domini actual \nS'han creat les Unitats Organitzatives Principals \nS'ha establert la contrasenya de LDAP a ldapscripts.passwd  ")
+      display_result "Configuració de ldapscripts"
+ }
 #--------------------------------------------------START--GRAPHICAL--INTERFACE------------------------------------------------------#
 
 DIALOG_CANCEL=1
@@ -308,6 +325,7 @@ while true; do
     "2" "Reconfigurar slapd i canviar el nom del domini" \
     "3" "Crear Fitxers .LDIF d'exemple" \
     "4" "Configurar LDAPSCRIPTS" \
+    "5" "Fer TOT lo llistat a dalt" \
     2>&1 1>&3)
   exit_status=$?
   exec 3>&-
@@ -345,12 +363,9 @@ while true; do
       setup_main_ous
       result=$(printf "s'ha creat 'ldapscripts.conf' amb el domini actual \nS'han creat les Unitats Organitzatives Principals \nS'ha establert la contrasenya de LDAP a ldapscripts.passwd  ")
       display_result "Configuració de ldapscripts"
+      ;;
     5 )
-      configure_ldapscripts
-      setup_main_ous
-      set_ldapscripts_passwd
-      result=$(printf "s'ha creat 'ldapscripts.conf' amb el domini actual \nS'han creat les Unitats Organitzatives Principals \nS'ha establert la contrasenya de LDAP a ldapscripts.passwd  ")
-      display_result "Configuració de ldapscripts"
+      doallabove
       ;;
     # 6 )
     #   if [[ $(id -u) -eq 0 ]]; then
