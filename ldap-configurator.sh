@@ -273,8 +273,8 @@ ldapscriptspasswd() {
     fi
 
     # Update the LDAP password file with the secret
-    secret=$(echo "$secret" | tr -d '\n')  # Remove newline character (sanitize)
-    echo -n "$secret" > /etc/ldapscripts/ldapscripts.passwd
+    filtersecret=$(echo "$secret" | tr -d '\n')  # Remove newline character (sanitize)
+    echo -n "$filtersecret" > /etc/ldapscripts/ldapscripts.passwd
     chmod 400 /etc/ldapscripts/ldapscripts.passwd
     echo "Secret word '$secret' successfully set in /etc/ldapscripts/ldapscripts.passwd"
 }
