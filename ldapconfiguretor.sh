@@ -252,7 +252,7 @@ ob jectClass: organizationalUnit
 objectClass: top
 ou: Maquines
 EOF
-printf "A continuació es demanarà la contrasenya del teu domini LDAP\nPer afegir les OU principals de LDAPSCRIPTS:\n\n"
+printf "\n\nA continuació es demanarà la contrasenya del teu domini LDAP\nPer afegir les OU principals de LDAPSCRIPTS:\n\n"
 sudo ldapadd -f MAIN-OUS.ldif -D cn=admin,$ldap_domain -xW
 }
 
@@ -263,7 +263,7 @@ ldapscriptspasswd() {
     # secret=$(dialog --clear --title "Set LDAP secret" \
     #     --inputbox "Enter your LDAP password:" 10 30 2>&1 >/dev/tty) #old method
     exec 3>&1;
-    secret=$(dialog --clear --title "Configure LDAPSCRIPTS" --inputbox "test" 0 0 2>&1 1>&3);
+    secret=$(dialog --clear --title "Configure LDAPSCRIPTS" --inputbox "Introdueix la contrasenya de LDAP" 0 0 2>&1 1>&3);
     exec 3>&-;
 
 
@@ -307,6 +307,87 @@ DIALOG_ESC=255
 HEIGHT=0
 WIDTH=0
 
+editfilesmenu(){
+    exec 3>&1
+  filesmenu=$(dialog \
+    --backtitle "LDAP CONFIGURATOR v1 GRAPHICAL-EDITION | VIEW AND EDIT LDAP FILES" \
+    --title "VIEW AND EDIT LDAP FILES" \
+    --clear \
+    --cancel-label "Back" \
+    --menu "In this menu you can choose to open an LDAP-related file with NANO.  \n \n Please select:" $HEIGHT $WIDTH 6 \
+    "1" "ldapscripts.conf (/etc/ldapscripts/)" \
+    "2" "ldapscripts.passwd (/etc/ldapscripts/)" \
+    "3" "netplan" \
+    "4" "Funció extra (No Implementada)" \
+    2>&1 1>&3)
+  exit_status=$?
+  exec 3>&-
+
+  case $filesmenu in
+    1 )
+      clear
+      sudo nano /etc/ldapscripts/ldapscripts.conf
+      result=$(echo "Has tornat!")
+      display_result "LDAP CONFIGURATOR"
+      ;;
+    2 )
+      clear
+      sudo nano /etc/ldapscripts/ldapscripts.passwd
+      result=$(echo "Has tornat!")
+      display_result "LDAP CONFIGURATOR"
+      ;;
+    3 )
+      result=$(echo "No hi ha res a veure de moment.")
+      display_result "Funció no implementada"
+      ;;
+    4 )
+      result=$(echo "No hi ha res a veure de moment.")
+      display_result "Funció no implementada"
+      ;;
+  esac
+}
+
+otheroptionsmenu(){
+    exec 3>&1
+  altmenu=$(dialog \
+    --backtitle "LDAP CONFIGURATOR v1 GRAPHICAL-EDITION | MORE OPTIONS" \
+    --title "OTHER OPTIONS" \
+    --clear \
+    --cancel-label "Back" \
+    --menu "This menu shows alternative options.  \n \n Please select:" $HEIGHT $WIDTH 6 \
+    "1" "PURGAR tots els paquets ldap" \
+    "2" "RE-INSTALAR tots els paquets ldap" \
+    "3" "Editar Fitxer..." \
+    "4" "Funció extra (No Implementada)" \
+    2>&1 1>&3)
+  exit_status=$?
+  exec 3>&-
+
+  case $altmenu in
+    1 )
+      clear
+      sudo apt purge -y slapd ldap-utils ldapscripts ldap-account-manager
+      result=$(echo && echo "S'han DESINSTALAT tots els paquets LDAP.")
+      display_result "Eliminació de Paquets LDAP"
+      ;;
+    2 )
+      clear
+      sudo apt purge -y slapd ldap-utils ldapscripts ldap-account-manager && sudo apt install -y slapd ldap-utils ldapscripts ldap-account-manager
+      result=$(echo && echo "S'han RE-INSTALAT tots els paquets LDAP.")
+      display_result "RE-INSTALACIÓ de Paquets LDAP"
+      ;;
+    3 )
+      editfilesmenu
+      ;;
+    4 )
+      result=$(echo "No hi ha res a veure de moment.")
+      display_result "Funció no implementada"
+      ;;
+  esac
+}
+
+
+
 display_result() {
   dialog --title "$1" \
     --no-collapse \
@@ -327,12 +408,13 @@ while true; do
     --title "LDAP CONFIGURATOR - $ldap_domain" \
     --clear \
     --cancel-label "Exit" \
-    --menu "$pkg1 \n $pkg2 \n $pkg3 \n $pkg4 \n  \n \n Please select:" $HEIGHT $WIDTH 6 \
+    --menu "INFO: $pkg1 \n $pkg2 \n $pkg3 \n $pkg4 \n  \n \n Please select:" $HEIGHT $WIDTH 6 \
     "1" "Instalar tots els paquets ldap" \
     "2" "Reconfigurar slapd i canviar el nom del domini" \
     "3" "Crear Fitxers .LDIF d'exemple" \
     "4" "Configurar LDAPSCRIPTS" \
-    "5" "Fer TOT lo llistat a dalt" \
+    "5" "Més opcions..." \
+    "6" "Fer TOT lo llistat a dalt" \
     2>&1 1>&3)
   exit_status=$?
   exec 3>&-
@@ -368,13 +450,16 @@ while true; do
       configure_ldapscripts
       ldapscriptspasswd
       setup_main_ous
-      result=$(printf "- s'ha creat 'ldapscripts.conf' amb el domini actual \n\n- S'han creat les Unitats Organitzatives Principals \n\n- S'ha establert la contrasenya de LDAP a ldapscripts.passwd")
+      result=$(printf "- s'ha creat 'ldapscripts.conf' amb el domini actual \n\n - S'han creat les Unitats Organitzatives Principals \n\n - S'ha establert la contrasenya de LDAP a ldapscripts.passwd")
       display_result "Configuració de ldapscripts"
       ;;
     5 )
+      otheroptionsmenu
+      ;;
+    6 )
       doallabove
       ;;
-    # 6 )
+    # 7 )
     #   if [[ $(id -u) -eq 0 ]]; then
     #     result=$(du -sh /home/* 2> /dev/null)
     #     display_result "Home Space Utilization (All Users)"
