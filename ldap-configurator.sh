@@ -238,17 +238,17 @@ pkg4=$(
 setup_main_ous(){
   cat << EOF > MAIN-OUS.ldif
 dn: ou=Usuaris,$ldap_domain
-ob jectClass: organizationalUnit
+objectClass: organizationalUnit
 objectClass: top
 ou: Usuaris
 
 dn: ou=Grups,$ldap_domain
-ob jectClass: organizationalUnit
+objectClass: organizationalUnit
 objectClass: top
 ou: Grups
 
 dn: ou=Maquines,$ldap_domain
-ob jectClass: organizationalUnit
+objectClass: organizationalUnit
 objectClass: top
 ou: Maquines
 EOF
@@ -274,7 +274,7 @@ ldapscriptspasswd() {
 
     # Update the LDAP password file with the secret
     filtersecret=$(echo "$secret" | tr -d '\n')  # Remove newline character (sanitize)
-    echo -n "$filtersecret" > /etc/ldapscripts/ldapscripts.passwd
+    echo -n "$filtersecret" | tr -d '\n' > /etc/ldapscripts/ldapscripts.passwd
     chmod 400 /etc/ldapscripts/ldapscripts.passwd
     echo "Secret word '$secret' successfully set in /etc/ldapscripts/ldapscripts.passwd"
 }
